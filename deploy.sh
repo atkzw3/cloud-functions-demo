@@ -12,11 +12,17 @@ if [ -z "$REGION" ] || [ -z "$SERVICE_NAME" ] || [ -z "$FUNCTION_NAME" ] || [ -z
   echo "Please set: REGION, SERVICE_NAME, FUNCTION_NAME, BASE_IMAGE"
   exit 1
 fi
-## 初回デプロイ・更新時に実行
+
+ENV_VARS=""
+if [ -n "$ALLOWED_ORIGINS" ]; then
+  ENV_VARS="--set-env-vars ALLOWED_ORIGINS=$ALLOWED_ORIGINS"
+fi
+
 gcloud run deploy $SERVICE_NAME \
        --source ./helloworld \
        --function $FUNCTION_NAME \
        --base-image $BASE_IMAGE \
        --region $REGION \
-       --allow-unauthenticated
+       --allow-unauthenticated \
+       $ENV_VARS
 
